@@ -1,0 +1,15 @@
+info:
+  name: Criar mensagens
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: https://legendary-barnacle-v6xgp45vj6rp2xwjg-3000.app.github.dev/
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
