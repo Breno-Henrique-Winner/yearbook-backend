@@ -11,5 +11,4 @@ export default function logger(req, res, next) {
     console.log(`[${agora}] ${metodo} ${url} ${status} - ${duration}ms`);
   });
 
-  next();
 }
