@@ -1,19 +1,23 @@
 import prisma from '../prisma/client.js'; // importa o singleton do Prisma
 
 // GET /mensagens — lista todas as mensagens (mais recentes primeiro, com dados do autor)
-export async function listarMensagens(req, res) {
-  const mensagens = await prisma.mensagem.findMany({
-    orderBy: { criadoEm: 'desc' },  // mais recente primeiro
-    include: {
-      autor: {                        // traz dados do autor junto
-        select: {
-          nome: true,                 // nome do autor
-          fotoUrl: true,              // foto do autor
+export async function listarMensagens(req, res, next) {
+  try {
+    const mensagens = await prisma.mensagem.findMany({
+      orderBy: { criadoEm: 'desc' }, // mais recente primeiro
+      include: {
+        autor: {
+          select: {
+            nome: true,
+            fotoUrl: true,
+          },
         },
       },
-    },
-  });
-  res.json(mensagens); // retorna a lista com autor embutido
+    });
+    res.json(mensagens); // retorna a lista com autor embutido
+  } catch (erro) {
+    next(erro);
+  }
 }
 
 // --- Stubs para o desafio do aluno ---
@@ -21,31 +25,35 @@ export async function listarMensagens(req, res) {
 // 🎯 POST /mensagens — cria uma nova mensagem
 // Siga o mesmo padrão do criarAluno
 // Valide que texto não está vazio (400 se faltar)
-export async function criarMensagem(req, res) {
+export async function criarMensagem(req, res, next) {
   // implemente aqui
+  try {
+    // Validação
    const { texto, imagemUrl, autorId } = req.body;
+   
+    if (!texto) {
+      return res.status(400).json({
+        erro: "O campo texto é obrigatório",
+      });
+    }
 
-  // Validação
-  if (!texto) {
-    return res.status(400).json({
-      erro: "O campo texto é obrigatório",
+    const mensagemCriada = await prisma.mensagem.create({
+      data: {
+        texto,
+        imagemUrl,
+        autorId: Number(autorId),
+      },
     });
-  }
 
-  const mensagemCriada = await prisma.mensagem.create({
-    data: {
-      texto,
-      imagemUrl,
-      autorId: Number(autorId),
-    },
-  });
-
-  return res.status(201).json(mensagemCriada);
+    return res.status(201).json(mensagemCriada);
+    } catch (erro) {
+      next(erro);
+    }
 }
 
 // 🎯 DELETE /mensagens/:id — deleta uma mensagem
 // Siga o mesmo padrão do deletarAluno
-export async function deletarMensagem(req, res) {
+export async function deletarMensagem(req, res, next) {
   // implemente aqui
   const { id } = req.params;
 
