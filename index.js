@@ -1,8 +1,8 @@
 import 'dotenv/config';                              // carrega .env — PRIMEIRA LINHA
-import logger from './middlewares/logger.js';      // importa o middleware de log
-import cors from 'cors';                              // novo import
-import tratarErro from './middlewares/erro.js';     // novo import
 import express from 'express';                // importa o Express
+import cors from 'cors';                              // novo import
+import logger from './middlewares/logger.js';      // importa o middleware de log
+import tratarErro from './middlewares/erro.js';     // novo import
 import alunosRouter from './routes/alunos.js'; // importa o router de alunos <- NOVO
 import mensagensRouter from './routes/mensagens.js'; // novo import
 
@@ -29,12 +29,6 @@ app.use('/mensagens', mensagensRouter); // registra rotas de mensagens
 
 // Middleware de erro — SEMPRE por último, depois das rotas
 app.use(tratarErro);
-
-if (process.env.VERCEL !== '1') {
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-  });
-}
 
 // inicia o servidor localmente — na Vercel essa parte é pulada
 if (process.env.VERCEL !== '1') {
